@@ -52,7 +52,8 @@ kable(head(fastfood[, 1:5]), "pipe")
 
 ```{r}
 fastfood %>%
-  filter(calories > 1000)
+  filter(calories > 1000) %>%
+  head(n = 30)
 ```
 
 9. Arrange observations with more than 40 in total_fat and more than 80 in total_carb in the descending order (PLEASE USE THE VARIABLE OF YOUR CHOICE TO ORGANISE THE DESCENDING ORDER) and save them to a new variable (dataset) called `dont_eat_this`
@@ -111,27 +112,27 @@ fastfood %>%
 
 
 ```{r}
-fastfood %>%
+fastfood <-fastfood %>%
   group_by(restaurant) %>%
   mutate("avarege_calories" = mean(calories)) %>%
   ungroup() %>%
   kable()
 ```
 
-```{r}
-fastfood %>%
+```{r} 
+fastfood <- fastfood %>%
   group_by(restaurant) %>%
   mutate("max_fat" = max(total_fat)) %>%
-  ungroup() %>%
-  kable()
+  ungroup()
+  
 ```
 
 ```{r}
-fastfood %>%
+fastfood <- fastfood %>%
   group_by(restaurant) %>%
   mutate("min_cholesterol" = min(cholesterol)) %>%
-  ungroup() %>%
-  kable()
+  ungroup()
+  
 ```
 
 
@@ -145,16 +146,15 @@ fastfood %>%
   labs(x = "Type of Restaurant", y = "Total Fat", fill = 
          "restaurant",title = "Total fat of each restaurants")
 ```
-
+Type of restaurant is categorised as a discrete valuable, whereas total fat is a continuous valuable. In this case, geom_col is the most suitable data visualisation in order compare the total fat with each type of restaurant.  
 
 
 16. Add a variable to the dataset, which calculates the sum of cholesterol and sodium and call it `cholesterol_sodium`.
 Remove the variable `salad`
 
 ```{r}
-library(dplyr)
 
-fastfood %>%
+fastfood <- fastfood %>%
   mutate(cholesterol_sodium = cholesterol + sodium, "salad" = NULL)
 
 
@@ -166,21 +166,24 @@ fastfood %>%
 ```{r}
 fastfood %>%
   filter(restaurant == "Mcdonalds") %>%
-  ggplot(aes(sugar, protein, col = "red")) + geom_point() 
-
+  ggplot(aes(sugar, protein, col = "restaurant")) + geom_point() 
+ 
 ```
 
 18. Identify variable(s) which should be factors and transform their type into a factor variable.
 
 ```{r}
-as_factor(fastfood$restaurant)
-as_factor(fastfood$item)
-as_factor(fastfood$salad)
-as_factor(fastfood$heavy_food)
+fastfood <- fastfood %>% mutate_if(is.character, factor)
 
-skim(fastfood)
 ```
 
+There are three charactor valuable ("restaurant", "item", "heavy_food") which should be changed to factor.   
+
+
+
+```{r}
+skim(fastfood)
+```
 
 
 19. Create two new variables:
@@ -202,7 +205,7 @@ calories_types <- fastfood %>%
 
 calories_types %>%
   ggplot(aes(restaurant, calories_type, col = restaurant)) +
-  geom_count() + 
+  geom_jitter() + 
   coord_flip()
 ```
 
@@ -210,7 +213,7 @@ calories_types %>%
 21. The second variable should show the percentage of `trans_fat` in `total_fat`. Add the variable to the dataset and call it `trans_fat_percent`. Do not forget to save the updated dataset. 
 
 ```{r}
-fastfood %>%
+fastfood <- fastfood %>%
   mutate(trans_fat_persent = trans_fat / total_fat * 100)
 ```
 
@@ -222,7 +225,8 @@ fastfood %>%
   geom_col() + 
   facet_wrap(~ trans_fat) +
   coord_flip() + 
-  labs(x = "Types of restaurants", y = "Trans_fat")
+  labs(x = "Types of restaurants", y = "Trans_fat") +
+  theme_get()
   
 ```
 
@@ -247,8 +251,8 @@ fastfood %>%
   mutate("average_fat" = mean(total_fat)) -> average_fat 
 
 average_fat %>% 
-  ggplot(aes(restaurant, average_fat, fill = restaurant)) + 
-  geom_col() + 
+  ggplot(aes(restaurant, total_fat, fill = restaurant)) + 
+  geom_boxplot() + 
   coord_flip()
   
   
