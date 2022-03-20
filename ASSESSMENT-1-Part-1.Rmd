@@ -69,9 +69,7 @@ dont_eat_this <- fastfood %>%
 
 ```{r}
 fastfood <- fastfood %>%
-  mutate(heavy_food = case_when(calories > 500 ~ "heavy", 
-                                calories < 250 ~ "low", 
-                                TRUE ~ "avarage"))
+  mutate(heavy_food = case_when(calories > 500 ~ "heavy",calories < 250 ~ "low",TRUE ~ "avarage"))
 
 fastfood %>%
 count(heavy_food, sort = TRUE, name = "Calories category")
@@ -99,8 +97,7 @@ fastfood %>%
 fastfood %>%
   group_by(restaurant) %>%
   summarise(mean(calories)) %>%
-  ungroup() %>%
-  kable()
+  ungroup()
 ```
 
 
@@ -112,11 +109,11 @@ fastfood %>%
 
 
 ```{r}
-fastfood <-fastfood %>%
+fastfood <- fastfood %>%
   group_by(restaurant) %>%
   mutate("avarege_calories" = mean(calories)) %>%
-  ungroup() %>%
-  kable()
+  ungroup()
+  
 ```
 
 ```{r} 
@@ -146,6 +143,9 @@ fastfood %>%
   labs(x = "Type of Restaurant", y = "Total Fat", fill = 
          "restaurant",title = "Total fat of each restaurants")
 ```
+
+
+
 Type of restaurant is categorised as a discrete valuable, whereas total fat is a continuous valuable. In this case, geom_col is the most suitable data visualisation in order compare the total fat with each type of restaurant.  
 
 
@@ -153,11 +153,8 @@ Type of restaurant is categorised as a discrete valuable, whereas total fat is a
 Remove the variable `salad`
 
 ```{r}
-
 fastfood <- fastfood %>%
   mutate(cholesterol_sodium = cholesterol + sodium, "salad" = NULL)
-
-
 ```
 
 
@@ -173,11 +170,18 @@ fastfood %>%
 18. Identify variable(s) which should be factors and transform their type into a factor variable.
 
 ```{r}
-fastfood <- fastfood %>% mutate_if(is.character, factor)
-
+as_factor(fastfood$restaurant) %>%
+  head(n=20)
 ```
 
-There are three charactor valuable ("restaurant", "item", "heavy_food") which should be changed to factor.   
+
+```{r}
+as_factor(fastfood$item) %>%
+  head(n=20)
+```
+
+
+There are three charactor valuable ("restaurant", "item", "salad") which should be changed to factor.   
 
 
 
